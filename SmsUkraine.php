@@ -21,14 +21,6 @@ class SmsUkraine
 
 
     /**
-     * Max error
-     *
-     * @var int
-     */
-    protected $maxError = 3;
-
-
-    /**
      * API key
      *
      * @var string
@@ -53,20 +45,35 @@ class SmsUkraine
 
 
     /**
-     * Sender from name
+     * Last response
      *
-     * @var bool
+     * @var array
      */
-    protected $from = false;
+    private $_last_response = array();
 
 
     /**
-     * Last response
+     * Errors
      *
-     * @var null
+     * @var array
      */
-    private $_last_response = null;
+    protected $_errors = array();
 
+
+    public function __construct($param)
+    {
+        if (isset($param['api_key'])) {
+            $this->apiKey = $param['api_key'];
+        }
+
+        if (isset($param['api_login'])) {
+            $this->apiLogin = $param['api_login'];
+        }
+
+        if (isset($param['api_password'])) {
+            $this->apiPassword = $param['api_password'];
+        }
+    }
 
     /**
      * Set custom param
@@ -75,32 +82,20 @@ class SmsUkraine
      */
     public function set($param)
     {
-        if (isset($param['mode'])) {
-            $this->mode = $param['mode'];
-        }
         if (isset($param['server'])) {
             $this->server = $param['server'];
         }
 
-        if (isset($param['maxError'])) {
-            $this->maxError = $param['maxError'];
+        if (isset($param['key'])) {
+            $this->apiKey = $param['key'];
         }
 
-        if (isset($param['apiKey'])) {
-            $this->apiKey = $param['apiKey'];
+        if (isset($param['login'])) {
+            $this->apiLogin = $param['login'];
         }
 
-        if (isset($param['apiLogin'])) {
-            $this->apiLogin = $param['apiLogin'];
-        }
-
-        if (isset($param['apiPassword'])) {
-            $this->apiPassword = $param['apiPassword'];
-        }
-
-
-        if (isset($param['from'])) {
-            $this->from = $param['from'];
+        if (isset($param['password'])) {
+            $this->apiPassword = $param['password'];
         }
     }
 
@@ -109,37 +104,66 @@ class SmsUkraine
      * Send SMS
      *
      * @param $data
-     * @return mixed|null
+     * @return string
      */
     public function send($data)
     {
+        $result = $this->execute('send', $data);
 
-        return $this->execute('send', $data);
+        if (isset($result['id'])) {
+            return $result['id'];
+        } else {
+            return '';
+        }
     }
+
 
 
     /**
      * Get balance
      *
-     * @return mixed
+     * @return string
      */
     public function getBalance()
     {
         $result = $this->execute('balance');
-//        var_dump($result);
-        ///if (count(@$result['errors']))
-//            $this->_errors = $result['errors'];
-        return @$result['balance'];
+
+        if (isset($result['balance'])) {
+            return $result['balance'];
+        }else{
+            return '';
+        }
     }
 
 
     /**
+     * Get status SMS
+     *
+     * @param $sms_id
+     * @return string
+     */
+    public function receiveSMS($sms_id)
+    {
+        $result = $this->execute('receive', ['id' => $sms_id]);
+
+        if (isset($result['status'])) {
+            return $result['status'];
+        } else {
+            return '';
+        }
+    }
+
+
+    /**
+     * Send request
+     *
      * @param $command
      * @param array $params
      * @return mixed|null
      */
     protected function execute($command, $params = array())
     {
+        $params['command'] = $command;
 
         if ($this->apiKey) {
             $params['key'] = $this->apiKey;
@@ -148,26 +172,58 @@ class SmsUkraine
             $params['password'] = $this->apiPassword;
         }
 
-        $params['command'] = $command;
-
-        $params_url = '';
-        foreach ($params as $key => $value)
-            $params_url .= '&' . $key . '=' . $this->base64_url_encode($value);
-
+        $data = array();
+        foreach ($params as $key => $value) {
+            $data[$key] = $this->base64_url_encode($value);
+        }
 
         //cURL HTTPS POST
         $ch = curl_init($this->server);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_POST, count($params));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $params_url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         $response = @curl_exec($ch);
         curl_close($ch);
 
         $this->_last_response = @unserialize($this->base64_url_decode($response));
+
+        if (isset($this->_last_response['errors'])) {
+            $this->_errors = $this->_last_response['errors'];
+        }
+
         return $this->_last_response;
+    }
+
+    /**
+     * Get last response
+     *
+     * @return array
+     */
+    public function getResponse()
+    {
+        return $this->_last_response;
+    }
+
+    /**
+     * Return array of errors
+     *
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->_errors;
+    }
+
+    /**
+     * Returns number of errors
+     * @return int
+     */
+    public function hasErrors()
+    {
+        return count($this->_errors);
     }
 
 

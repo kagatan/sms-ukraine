@@ -7,12 +7,22 @@ return [
     | API Credentials
     |--------------------------------------------------------------------------
     |
-    | Укажите ваш API ключ
-    | https://smsukraine.com.ua/account/login/ | 'Настройки'.
-    |
     */
 
+    /**
+     * API ключ
+     */
     'api_key'    => function_exists('env') ? env('SMSUKRAINE_KEY', '') : '',
+
+    /**
+     * API логин
+     */
+    'api_login'    => function_exists('env') ? env('SMSUKRAINE_LOGIN', '') : '',
+
+    /**
+     * API пароль
+     */
+    'api_password'    => function_exists('env') ? env('SMSUKRAINE_PASSWORD', '') : '',
 
 
     /*
