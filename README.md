@@ -86,3 +86,21 @@ public function test()
 
 **Доступные методы:**
 
+```php
+$id = SmsUkraine::send([
+    'to'      => '38093xxxx',
+    'message' => 'Demo text',
+    'from'    => 'WiFi Point'
+]); // Отправить СМС
+
+
+SmsUkraine::receiveSMS($id);  // Получить статус доставки смс по ID
+
+SmsUkraine::getBalance();  // Получить баланс
+
+SmsUkraine::hasErrors();  // Получить кол-во ошибок
+
+SmsUkraine::getErrors();  // Получить ошибки
+
+SmsUkraine::getResponse();  // Получить RAW ответ запроса
+```
