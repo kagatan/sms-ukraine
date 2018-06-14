@@ -2,7 +2,6 @@
 
 namespace Kagatan\SmsUkraine\Facades;
 
-use Kagatan\SmsUkraine\SmsUkraineHelper;
 use Illuminate\Support\Facades\Facade;
 
 class SmsUkraine extends Facade
@@ -16,6 +15,6 @@ class SmsUkraine extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return SmsUkraineHelper::class;
+        return 'smsukraine';
     }
 }

@@ -9,7 +9,7 @@
 namespace Kagatan\SmsUkraine;
 
 
-class SmsUkraineHelper
+class SmsUkraine
 {
 
     /**
