@@ -38,10 +38,51 @@ php artisan vendor:publish --provider="Kagatan\SmsUkraine\SmsUkraineServiceProvi
 ```
 You should now have a config/smsukraine.php file that allows you to configure the basics of this package.
  
+ 
 ## Upgrading
-
+ 
 ```
 composer update kagatan/sms-ukraine
 ```
+ 
+## Configuration
+Добавьте ваш .env файл ключ SMSUKRAINE_KEY, где вместо xxxx ведите API key.
+
+```
+SMSUKRAINE_KEY= xxxxxxxxxxxxxxxxxxxxxx
+
+```
+Если хотите использовать связку логин/пароль то добавляем след ключи:
+
+```
+SMSUKRAINE_LOGIN= xxxxx
+
+SMSUKRAINE_PASSWORD= xxxxx
+
+```
+ 
 
 ## Usage
+
+**Пример использования:**
+
+```
+
+use Kagatan\SmsUkraine\Facades\SmsUkraine;
+
+....
+
+public function test()
+{
+    $id = SmsUkraine::send([
+        'to'      => '38093xxxx',
+        'message' => 'Demo text',
+        'from'    => 'WiFi Point'
+    ]);
+    
+    echo $id;
+}
+```
+
+**Доступные методы:**
+
