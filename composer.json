@@ -1,0 +1,19 @@
+{
+    "name": "kagatan/sms-ukraine",
+    "description": "Send sms from SmsUkraine",
+    "license": "MIT",
+    "version": "1.0.2",
+    "authors": [
+        {
+            "name": "Maxim Stupakov",
+            "email": "max_stupakov@mail.ru"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+      "psr-4":{
+        "Kagatan\\SmsUkraine\\": ""
+      }
+    }
+}
