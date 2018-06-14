@@ -37,7 +37,7 @@ Run the following command to publish the package config file:
 php artisan vendor:publish --provider="Kagatan\SmsUkraine\SmsUkraineServiceProvider"
 ```
 You should now have a config/smsukraine.php file that allows you to configure the basics of this package.
-
+ 
 ## Upgrading
 
 ```
