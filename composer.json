@@ -2,7 +2,7 @@
     "name": "kagatan/sms-ukraine",
     "description": "Send sms from SmsUkraine",
     "license": "MIT",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "authors": [
         {
             "name": "Maxim Stupakov",
