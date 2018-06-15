@@ -35,7 +35,7 @@ $ composer require kagatan/sms-ukraine
 ]
 ```
 
-Для публикации провайдреа и создания конфиг файла выполним:
+Для публикации провайдера и создания конфиг файла выполним:
 ```
 php artisan vendor:publish --provider="Kagatan\SmsUkraine\SmsUkraineServiceProvider"
 ```
