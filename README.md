@@ -116,3 +116,4 @@ SmsUkraine::getResponse();  // Получить RAW ответ запроса
 
 [getcomposer]:https://getcomposer.org/download/
 [smsukraine]:https://smsukraine.com.ua/
+[link_license]:https://github.com/kagatan/sms-ukraine/blob/master/LICENSE
