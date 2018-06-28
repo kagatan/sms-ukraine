@@ -28,18 +28,51 @@ $ composer require kagatan/sms-ukraine
 
 Добавим фасад:
 
-```
+```php
  'aliases' => [
     ...
     'SmsUkraine' => Kagatan\SmsUkraine\Facades\SmsUkraine::class
 ]
 ```
 
-Для публикации провайдера и создания конфиг файла выполним:
+Добавим в файл  `config/services.php` :
+```php
+// config/services.php
+...
+'sms-ukraine' => [
+        'key'      => function_exists('env') ? env('SMSUKRAINE_KEY', '') : '',
+        'login'    => function_exists('env') ? env('SMSUKRAINE_LOGIN', '') : '',
+        'password' => function_exists('env') ? env('SMSUKRAINE_PASSWORD', '') : '',
+        'from'     => function_exists('env') ? env('SMSUKRAINE_FROM', '') : '',
+    ],
+...
 ```
+
+Для публикации провайдера:
+```bash
 php artisan vendor:publish --provider="Kagatan\SmsUkraine\SmsUkraineServiceProvider"
 ```
 
+# Настройка
+После установки вам необходимо изменить файл `./.env` добавив ключи
+
+```ini
+SMSUKRAINE_KEY=xxxxxxxxxxxxxxxxxxxxxx
+
+SMSUKRAINE_FROM=SENDER-NAME
+
+```
+
+Если хотите использовать связку логин/пароль то добавляем следующие ключи:
+
+```ini
+SMSUKRAINE_LOGIN=xxxxx
+
+SMSUKRAINE_PASSWORD=xxxxx
+
+SMSUKRAINE_FROM=SENDER-NAME
+```
+ 
 
 ## Upgrading
  
@@ -47,24 +80,7 @@ php artisan vendor:publish --provider="Kagatan\SmsUkraine\SmsUkraineServiceProvi
 composer update kagatan/sms-ukraine
 ```
  
-## Настройка
-После установки вам необходимо изменить файл `./.env` добавив ключи
-
-```ini
-SMSUKRAINE_KEY= xxxxxxxxxxxxxxxxxxxxxx
-
-```
-
-Если хотите использовать связку логин/пароль то добавляем след ключи:
-
-```ini
-SMSUKRAINE_LOGIN= xxxxx
-
-SMSUKRAINE_PASSWORD= xxxxx
-
-```
- 
-
+#
 
 ## Использование
 
@@ -80,8 +96,27 @@ public function test()
 {
     $id = SmsUkraine::send([
         'to'      => '38093xxxx',
-        'message' => 'Demo text',
-        'from'    => 'WiFi Point'
+        'message' => 'Example text'
+    ]);
+    
+    echo $id;
+}
+```
+
+Так же можно переопределить ключи из настроек добавив их в массив с параметрами:
+```php
+
+use Kagatan\SmsUkraine\Facades\SmsUkraine;
+
+....
+
+public function test()
+{
+    $id = SmsUkraine::send([
+        'to'      => '38093xxxx',
+        'message' => 'Example text 2',
+        'from'    => 'SENDER',
+        'key'     => 'rtWERfcgdfdBCXFBrttrtht645ujhgfRtf'
     ]);
     
     echo $id;
@@ -91,12 +126,6 @@ public function test()
 Доступные к использованию методы:
 
 ```php
-$id = SmsUkraine::send([
-    'to'      => '38093xxxx',
-    'message' => 'Demo text',
-    'from'    => 'WiFi Point'
-]); // Отправить СМС
-
 
 SmsUkraine::receiveSMS($id);  // Получить статус доставки смс по ID
 

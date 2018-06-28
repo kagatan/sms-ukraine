@@ -154,9 +154,9 @@ class SmsUkraine
             //Определяем способ авторизации:
             //- по ключу
             //- по связке логин/пароль
-            if(!empty($this->key)){
+            if (!empty($this->key)) {
                 $params['key'] = $this->key;
-            }else{
+            } else {
                 $params['login'] = $this->login;
                 $params['password'] = $this->password;
             }
