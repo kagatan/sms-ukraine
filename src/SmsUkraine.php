@@ -5,7 +5,6 @@ namespace Kagatan\SmsUkraine;
 
 class SmsUkraine
 {
-
     /**
      * Server
      *
@@ -17,26 +16,32 @@ class SmsUkraine
     /**
      * API key
      *
-     * @var string
+     * @var null
      */
-    protected $apiKey = false;
+    protected $key = null;
 
 
     /**
      * API Login
      *
-     * @var bool
+     * @var null
      */
-    protected $apiLogin = false;
+    protected $login = null;
 
 
     /**
      * API Pass
      *
-     * @var bool
+     * @var null
      */
-    protected $apiPassword = false;
+    protected $password = null;
 
+    /**
+     * From
+     *
+     * @var null
+     */
+    protected $from = null;
 
     /**
      * Last response
@@ -44,7 +49,6 @@ class SmsUkraine
      * @var array
      */
     private $_last_response = array();
-
 
     /**
      * Errors
@@ -54,42 +58,22 @@ class SmsUkraine
     protected $_errors = array();
 
 
-    public function __construct($param)
+    public function __construct($params)
     {
-        if (isset($param['api_key'])) {
-            $this->apiKey = $param['api_key'];
+        if (isset($params['key'])) {
+            $this->key = $params['key'];
         }
 
-        if (isset($param['api_login'])) {
-            $this->apiLogin = $param['api_login'];
+        if (isset($params['login'])) {
+            $this->login = $params['login'];
         }
 
-        if (isset($param['api_password'])) {
-            $this->apiPassword = $param['api_password'];
-        }
-    }
-
-    /**
-     * Set custom param
-     *
-     * @param $param
-     */
-    public function set($param)
-    {
-        if (isset($param['server'])) {
-            $this->server = $param['server'];
+        if (isset($params['password'])) {
+            $this->password = $params['password'];
         }
 
-        if (isset($param['key'])) {
-            $this->apiKey = $param['key'];
-        }
-
-        if (isset($param['login'])) {
-            $this->apiLogin = $param['login'];
-        }
-
-        if (isset($param['password'])) {
-            $this->apiPassword = $param['password'];
+        if (isset($params['from'])) {
+            $this->from = $params['from'];
         }
     }
 
@@ -97,12 +81,16 @@ class SmsUkraine
     /**
      * Send SMS
      *
-     * @param $data
+     * @param $params
      * @return string
      */
-    public function send($data)
+    public function send($params = array())
     {
-        $result = $this->execute('send', $data);
+        if (!isset($params['from'])) {
+            $params['from'] = $this->from;
+        }
+
+        $result = $this->execute('send', $params);
 
         if (isset($result['id'])) {
             return $result['id'];
@@ -112,19 +100,19 @@ class SmsUkraine
     }
 
 
-
     /**
      * Get balance
      *
+     * @param array $params
      * @return string
      */
-    public function getBalance()
+    public function getBalance($params = array())
     {
-        $result = $this->execute('balance');
+        $result = $this->execute('balance', $params);
 
         if (isset($result['balance'])) {
             return $result['balance'];
-        }else{
+        } else {
             return '';
         }
     }
@@ -134,11 +122,14 @@ class SmsUkraine
      * Get status SMS
      *
      * @param $sms_id
+     * @param array $params
      * @return string
      */
-    public function receiveSMS($sms_id)
+    public function receiveSMS($sms_id, $params = array())
     {
-        $result = $this->execute('receive', ['id' => $sms_id]);
+        $params['id'] = $sms_id;
+
+        $result = $this->execute('receive', $params);
 
         if (isset($result['status'])) {
             return $result['status'];
@@ -157,14 +148,21 @@ class SmsUkraine
      */
     protected function execute($command, $params = array())
     {
-        $params['command'] = $command;
+        //Использовать параметры из конфига
+        if (!isset($params['key'], $params['login'], $params['password'])) {
 
-        if ($this->apiKey) {
-            $params['key'] = $this->apiKey;
-        } else {
-            $params['login'] = $this->apiLogin;
-            $params['password'] = $this->apiPassword;
+            //Определяем способ авторизации:
+            //- по ключу
+            //- по связке логин/пароль
+            if(!empty($this->key)){
+                $params['key'] = $this->key;
+            }else{
+                $params['login'] = $this->login;
+                $params['password'] = $this->password;
+            }
         }
+
+        $params['command'] = $command;
 
         $data = array();
         foreach ($params as $key => $value) {

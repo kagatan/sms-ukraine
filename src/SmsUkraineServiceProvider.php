@@ -13,9 +13,7 @@ class SmsUkraineServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishes([
-            __DIR__ . '/config/smsukraine.php' => config_path('smsukraine.php'),
-        ]);
+       //
     }
 
     /**
@@ -26,7 +24,7 @@ class SmsUkraineServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('smsukraine', function () {
-            return new SmsUkraine(config('smsukraine'));
+            return new SmsUkraine(config('services.sms-ukraine'));
         });
     }
 }
