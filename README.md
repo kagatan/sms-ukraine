@@ -85,7 +85,7 @@ composer update kagatan/sms-ukraine
 Базовый пример отправки SMS уведомлений с использованием функционала нотификаций в Laravel-приложениях:
 
 
-###Доступные к использованию методы у объекта SmsUkraineMessage:
+### Доступные к использованию методы у объекта SmsUkraineMessage:
 
 Имя метода  | Описание
 ----------- | --------
@@ -172,14 +172,14 @@ class User extends Model
 ```
 
 
-###Пример c использованием Notifiable Trait:
+### Пример c использованием Notifiable Trait:
 
 ```php
 $user->notify(new InvoicePaid());
 ```
 
 
-###Пример c использованием Notification Facade:
+### Пример c использованием Notification Facade:
 
 ```php
 Notification::send($users, new InvoicePaid());
@@ -187,7 +187,7 @@ Notification::send($users, new InvoicePaid());
 
 
 
-###Пример отправки SMS с использованием  фасадов(без использования Notification):
+### Пример отправки SMS с использованием  фасадов(без использования Notification):
 
 ```php
 <?php
