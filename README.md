@@ -85,6 +85,22 @@ composer update kagatan/sms-ukraine
 Базовый пример отправки SMS уведомлений с использованием функционала нотификаций в Laravel-приложениях:
 
 
+###Доступные к использованию методы у объекта SmsUkraineMessage:
+
+Имя метода  | Описание
+----------- | --------
+`from()`    | Имя отправителя (опционально)
+`to()`      | Номер телефона получателя (опционально)
+`content()` | Текст сообщения
+`sendAt()`  | Дата доставки (опционально)
+`key()`     | API ключ, для переопределения параметров из config(опционально)
+`login()`   | API логин, для переопределения параметров из config(опционально)
+`password()`| API пароль, для переопределения параметров из config(опционально)
+`toJson()`  | Обьект на выходе в JSON
+`toArray()` | Объект на выходе в массиве
+
+
+
 Пример класса оповещения:
 
 ```php
@@ -156,14 +172,14 @@ class User extends Model
 ```
 
 
-Пример c использованием Notifiable Trait
+###Пример c использованием Notifiable Trait:
 
 ```php
 $user->notify(new InvoicePaid());
 ```
 
 
-Пример c использованием Notification Facade
+###Пример c использованием Notification Facade:
 
 ```php
 Notification::send($users, new InvoicePaid());
@@ -171,7 +187,7 @@ Notification::send($users, new InvoicePaid());
 
 
 
-Пример отправки SMS с использованием  фасадов(без использования Notification):
+###Пример отправки SMS с использованием  фасадов(без использования Notification):
 
 ```php
 <?php
@@ -193,26 +209,11 @@ public function test(){
 }
 ```
 
-Доступные к использованию методы у объекта SmsUkraineMessage:
-
-Имя метода  | Описание
------------ | --------
-`from()`    | Имя отправителя (опционально)
-`to()`      | Номер телефона получателя (опционально)
-`content()` | Текст сообщения
-`sendAt()`  | Дата доставки (опционально)
-`key()`     | API ключ, для переопределения параметров из config(опционально)
-`login()`   | API логин, для переопределения параметров из config(опционально)
-`password()`| API пароль, для переопределения параметров из config(опционально)
-`toJson()`  | Обьект на выходе в JSON
-`toArray()` | Объект на выходе в массиве
-
-
 ## Лицензирование
 
 Код данного пакета распространяется под лицензией [MIT][link_license].
 
 
 [getcomposer]:https://getcomposer.org/download/
-[smsukraine]:https://smsukraine.com.ua/
+[smsukraine_home]:https://smsukraine.com.ua/
 [link_license]:https://github.com/kagatan/sms-ukraine/blob/master/LICENSE
