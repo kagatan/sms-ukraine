@@ -13,7 +13,8 @@ class SmsUkraineServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-       //
+        //
+
     }
 
     /**
@@ -23,8 +24,8 @@ class SmsUkraineServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('smsukraine', function () {
-            return new SmsUkraine(config('services.sms-ukraine'));
+        $this->app->singleton(SmsUkraineClient::class, function () {
+            return new SmsUkraineClient(config('services.sms-ukraine'));
         });
     }
 }

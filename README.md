@@ -2,7 +2,7 @@
   <img src="https://laravel.com/assets/img/components/logo-laravel.svg" alt="Laravel" width="240" />
 </p>
 
-# SMS уведомления для Laravel, сервис "SMS Ukraine"
+# Канал уведомлений для сервиса "SMS Ukraine"
 
 Используя данный пакет вы сможете легко интегрировать SMS уведомления в ваше Laravel-приложение, для отправки которых используется сервис "[SMS Ukraine][smsukraine_home]".
 
@@ -22,7 +22,7 @@ $ composer require kagatan/sms-ukraine
 ```php
 'providers' => [
     // ...
-   Kagatan\SmsUkraine\SmsUkraineServiceProvider::class,
+   Kagatan\SmsUkraineClient\SmsUkraineServiceProvider::class,
 ]
 ```
 
@@ -80,63 +80,133 @@ SMSUKRAINE_FROM=SENDER-NAME
 composer update kagatan/sms-ukraine
 ```
  
-#
-
 ## Использование
 
-Базовый пример отправки уведомления может выглядеть следующим образом:
+Базовый пример отправки SMS уведомлений с использованием функционала нотификаций в Laravel-приложениях:
+
+
+Пример класса оповещения:
 
 ```php
+<?php
+
+use Illuminate\Notifications\Notification;
+use Kagatan\SmsUkraine\SmsUkraineChannel;
+use Kagatan\SmsUkraine\SmsUkraineMessage;
+
+/**
+ * Notification object.
+ */
+class InvoicePaid extends Notification
+{
+    /**
+     * Get the notification channels.
+     *
+     * @param mixed $notifiable
+     *
+     * @return array|string
+     */
+    public function via($notifiable)
+    {
+        return [SmsUkraineChannel::class];
+    }
+
+    /**
+     * Get the SMS Ukraine Message representation of the notification.
+     *
+     * @param mixed $notifiable
+     *
+     * @return SmsUkraineMessage
+     */
+    public function toSmsUkraine($notifiable)
+    {
+        return SmsUkraineMessage::create()
+            ->content('Some SMS notification message');
+    }
+}
+
+```
+
+В своей нотифицируемой моделе обязательно добавьте метод `routeNotificationForSmsUkraine()`, который возвращает номер телефона или массив телефонных номеров.
+
+```php
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+
+class User extends Model
+{
+    use Notifiable;
+
+    /**
+     * Route notifications for the SmsUkraine channel.
+     *
+     * @param $notifiable
+     * @return string
+     */
+    public function routeNotificationForSmsUkraine($notifiable)
+    {
+        return $this->phone;
+    }
+}
+
+```
+
+
+Пример c использованием Notifiable Trait
+
+```php
+$user->notify(new InvoicePaid());
+```
+
+
+Пример c использованием Notification Facade
+
+```php
+Notification::send($users, new InvoicePaid());
+```
+
+
+
+Пример отправки SMS с использованием  фасадов(без использования Notification):
+
+```php
+<?php
 
 use Kagatan\SmsUkraine\Facades\SmsUkraine;
+use Kagatan\SmsUkraine\SmsUkraineMessage;
 
-....
+public function test(){
 
-public function test()
-{
-    $id = SmsUkraine::send([
-        'to'      => '38093xxxx',
-        'message' => 'Example text'
-    ]);
-    
-    echo $id;
+        $message = SmsUkraineMessage::create()
+            ->content("Example sending SMS.")
+            ->to("380987654210")
+            ->from("WiFi-POINT")
+            ->toArray();
+
+        $id = SmsUkraine::send($message);
+        
+        echo $id;
 }
 ```
 
-Так же можно переопределить ключи из настроек добавив их в массив с параметрами:
-```php
+Доступные к использованию методы у объекта SmsUkraineMessage:
 
-use Kagatan\SmsUkraine\Facades\SmsUkraine;
+Имя метода  | Описание
+----------- | --------
+`from()`    | Имя отправителя (опционально)
+`to()`      | Номер телефона получателя (опционально)
+`content()` | Текст сообщения
+`sendAt()`  | Дата доставки (опционально)
+`key()`     | API ключ, для переопределения параметров из config(опционально)
+`login()`   | API логин, для переопределения параметров из config(опционально)
+`password()`| API пароль, для переопределения параметров из config(опционально)
+`toJson()`  | Обьект на выходе в JSON
+`toArray()` | Объект на выходе в массиве
 
-....
-
-public function test()
-{
-    $id = SmsUkraine::send([
-        'to'      => '38093xxxx',
-        'message' => 'Example text 2',
-        'from'    => 'SENDER',
-        'key'     => 'rtWERfcgdfdBCXFBrttrtht645ujhgfRtf'
-    ]);
-    
-    echo $id;
-}
-```
-
-Доступные к использованию методы:
-
-```php
-
-SmsUkraine::receiveSMS($id);  // Получить статус доставки смс по ID
-
-SmsUkraine::getBalance();  // Получить баланс
-
-SmsUkraine::hasErrors();  // Получить кол-во ошибок
-
-SmsUkraine::getErrors();  // Получить ошибки
-
-SmsUkraine::getResponse();  // Получить RAW ответ запроса
-```
 
 ## Лицензирование
 
