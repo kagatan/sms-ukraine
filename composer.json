@@ -13,7 +13,7 @@
             "email": "max_stupakov@mail.ru"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {},
     "autoload": {
       "psr-4":{
