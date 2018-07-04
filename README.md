@@ -22,7 +22,7 @@ $ composer require kagatan/sms-ukraine
 ```php
 'providers' => [
     // ...
-   Kagatan\SmsUkraineClient\SmsUkraineServiceProvider::class,
+   Kagatan\SmsUkraine\SmsUkraineServiceProvider::class,
 ]
 ```
 
@@ -184,8 +184,6 @@ $user->notify(new InvoicePaid());
 ```php
 Notification::send($users, new InvoicePaid());
 ```
-
-
 
 **Пример отправки SMS с использованием  фасадов(без использования Notification):**
 

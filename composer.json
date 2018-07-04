@@ -1,11 +1,15 @@
 {
     "name": "kagatan/sms-ukraine",
     "description": "Send sms from SmsUkraine",
+    "keywords": [
+      "laravel",
+      "sms-ukraine"
+    ],
     "license": "MIT",
     "version": "1.0.3",
     "authors": [
         {
-            "name": "Maxim Stupakov",
+            "name": "Kagatan",
             "email": "max_stupakov@mail.ru"
         }
     ],
